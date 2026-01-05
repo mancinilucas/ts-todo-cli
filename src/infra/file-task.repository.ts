@@ -3,6 +3,8 @@ import path from "path";
 import type { TaskRepository } from "../tasks/task.repository.js";
 import type { Task } from "../tasks/task.type.js";
 
+type PersistedTask = Omit<Task, "createdAt"> & { createdAt: string };
+
 function isErrnoException(err: unknown): err is NodeJS.ErrnoException {
   return (
     typeof err === "object" &&
@@ -18,9 +20,8 @@ export class FileTaskRepository implements TaskRepository {
   async findAll(): Promise<Task[]> {
     try {
       const content = await fs.readFile(this.filePath, "utf-8");
-      const raw = JSON.parse(content) as Array<
-        Pick<Task, "id" | "title" | "completed"> & { createdAt: string }
-      >;
+      if (!content.trim()) return [];
+      const raw = JSON.parse(content) as PersistedTask[];
       return raw.map((r) => ({ ...r, createdAt: new Date(r.createdAt) }));
     } catch (err: unknown) {
       if (isErrnoException(err) && err.code === "ENOENT") return [];
