@@ -40,8 +40,29 @@ pnpm run dev
 pnpm run build
 ```
 
-- Executar build compilado:
+- Executar build compilado (testar funcionalidades):
+
+Modo recomendado (usar o script de start):
 
 ```bash
-pnpm run start
+pnpm run start -- <comando>
+```
+
+Alternativa (executar diretamente o binário compilado):
+
+```bash
+node dist/cli/index.js <comando>
+```
+
+Comandos disponíveis:
+
+- `add <título>` — cria uma nova tarefa
+- `list` — lista todas as tarefas (mostra `id` e estado `[ X ]`/`[   ]`)
+- `done <id>` — marca a tarefa como concluída
+- `remove <id>` — remove a tarefa
+
+Exemplo:
+
+```bash
+pnpm run start -- list
 ```
