@@ -1,10 +1,11 @@
 import path from "path";
 import { FileTaskRepository } from "../infra/file-task.repository.js";
 import { TaskService } from "../tasks/task.service.js";
+import { TaskNotFoundError } from "../core/errors.js";
 
 const DATA_FILE = path.resolve(process.cwd(), "data/tasks.json");
 
-const repository = new FileTaskRepository("data/tasks.json");
+const repository = new FileTaskRepository(DATA_FILE);
 const service = new TaskService(repository);
 
 const argsFromCli = process.argv.slice(2);
@@ -19,6 +20,14 @@ async function main() {
 
     case "list":
       await handleList();
+      break;
+
+    case "done":
+      await handleDone(args);
+      break;
+
+    case "remove":
+      await handleRemove(args);
       break;
 
     default:
@@ -48,15 +57,58 @@ async function handleList() {
 
   console.log("Tarefas:");
   for (const task of tasks) {
-    console.log(`- [${task.completed ? "x" : " "}] ${task.title}`);
+    const mark = task.completed ? " X " : " ";
+    console.log(`- [${mark}] ${task.title} (id: ${task.id})`);
   }
+}
+
+async function handleDone(args: string[]) {
+  const [taskId] = args;
+
+  if (!taskId) {
+    console.error("Error: O id da tarefa é obrigatório.");
+    process.exit(1);
+  }
+
+  try {
+    const updated = await service.updateTask(taskId, { completed: true });
+    console.log(`Tarefa marcada como concluída: ${updated.title}`);
+  } catch (err: unknown) {
+    handleCliError(err);
+  }
+}
+
+async function handleRemove(args: string[]) {
+  const [taskId] = args;
+
+  if (!taskId) {
+    console.error("Error: O id da tarefa é obrigatório.");
+    process.exit(1);
+  }
+
+  try {
+    await service.removeTask(taskId);
+    console.log(`Tarefa removida: ${taskId}`);
+  } catch (err: unknown) {
+    handleCliError(err);
+  }
+}
+
+function handleCliError(err: unknown): void {
+  if (err instanceof TaskNotFoundError) {
+    console.error("Erro: Tarefa não encontrada.");
+    return;
+  }
+  throw err;
 }
 
 function printHelp() {
   console.log(`
       Uso:
        todo add <título>
-       todo list  
+       todo list
+       todo done <id>
+       todo remove <id>
     `);
 }
 

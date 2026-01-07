@@ -2,7 +2,13 @@
   {
     "id": "70b1633b-52ef-44e8-9aff-35b7b0844f68",
     "title": "Fazer o lanche",
-    "completed": false,
+    "completed": true,
     "createdAt": "2026-01-07T01:25:42.606Z"
+  },
+  {
+    "id": "6bb932e4-91e8-4896-b741-67eb5af40619",
+    "title": "tarefa de teste 2",
+    "completed": false,
+    "createdAt": "2026-01-07T13:50:34.968Z"
   }
 ]
