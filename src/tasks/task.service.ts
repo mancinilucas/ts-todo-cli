@@ -6,6 +6,10 @@ export class TaskService {
   // DI
   constructor(private readonly repository: TaskRepository) {}
 
+  async listTasks(): Promise<Task[]> {
+    return this.repository.findAll();
+  }
+
   async createTask(input: CreateTaskInput): Promise<Task> {
     // Busca o estado atual dos dados antes de persistir as novas mudanças
     const tasks = await this.repository.findAll();

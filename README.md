@@ -45,13 +45,3 @@ pnpm run build
 ```bash
 pnpm run start
 ```
-
-**Observações**
-
-- O repositório de tarefas padrão é `data/tasks.json` — a implementação `FileTaskRepository` cria o diretório quando necessário e serializa `createdAt` como string ISO.
-- O projeto é intencionalmente minimalista para fins de estudo e pode ser estendido com comandos de CLI, validação e testes.
-
-**Próximos passos sugeridos**
-
-- Implementar interface de linha de comando em `src/cli/` para criar/listar/atualizar tarefas.
-- Adicionar testes unitários para `TaskService` e `FileTaskRepository`.
